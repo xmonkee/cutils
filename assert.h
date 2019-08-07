@@ -1,4 +1,4 @@
 #include <stdbool.h>
 
-extern int errors;
+int errors;
 int assert(bool cond, char * msg);
