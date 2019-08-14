@@ -32,7 +32,6 @@ char *space = " ";
 
 int dcl(char dcl[], chain *c) {
     // decl :: base_type expr
-    // expr :: var | (expr) | pointer* expr (func or arr)*
     int i = 0;
     char *base_type = malloc(20);
 
@@ -72,6 +71,24 @@ char *dcl_expr(char dcl[], int i) {
 
     while(isspace(dcl[i]))
         i++;
+
+    // Check left modifiers (*)
+    while(dcl[i] == '*') {
+        strcat(result, " pointer to");
+        i++;
+    }
+
+    // Insert expr
+    i = dcl_expr(c, dcl, i);
+
+    // Insert right mods
+    while(isspace(dcl[i]))
+        i++;
+
+    // Insert Left Mods
+    link_s_after(c, result);
+    return i;
+
     // check if var
     int j = 0;
     while(isalpha(dcl[i])) {
