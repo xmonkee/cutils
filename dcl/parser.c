@@ -18,24 +18,28 @@ int parse(char *in, int ptr) {
     }
 
     check(parse_expr(in, ptr));
+    printf(" %s\n", out);
     return 0;
 }
 
 int parse_expr(char *in, int ptr) {
     int ptr_orig = ptr;
+    int ptr_prv = ptr;
+
     char out[100];
     tok t;
     ptr = get_tok(out, &t, in, ptr);
 
     if (t == Chr && out[0] == '*') {
         while (t == Chr && out[0] == '*') {
+            ptr_prv = ptr;
             ptr = get_tok(out, &t, in, ptr);
         }
 
     }
 
-    check(parse_non_star(in, ptr));
-    check(parse_star(in, ptr == ptr_orig ? ));
+    check(parse_non_star(in, ptr_prv));
+    check(parse_star(in, ptr_orig));
 
     return 0;
 }
@@ -52,10 +56,11 @@ int parse_star(char *in, int ptr) {
 }
 
 int parse_non_star(char *in, int ptr) {
-    int ptr_orig = ptr;
+    int ptr_expr = ptr, ptr_rhs;
 
     char out[100];
     tok t;
+
     ptr=get_tok(out, &t, in, ptr);
 
     if (t == Var) {
@@ -66,8 +71,11 @@ int parse_non_star(char *in, int ptr) {
 
 
     if (t == Chr && out[0] == '(') {
+        ptr_expr = ptr;
         int p_count;
         for(p_count = 1; p_count > 0;) {
+            ptr_rhs = ptr;
+            ptr = get_tok(out, &t, in, ptr);
             if (t == Chr && out[0] == '(')
                 p_count++;
             if (t == Chr && out[0] == ')')
@@ -76,11 +84,10 @@ int parse_non_star(char *in, int ptr) {
                 printf("Unbalanced parens\n");
                 return -1;
             }
-            ptr = get_tok(out, &t, in, ptr);
         }
 
-        check(parse_expr(in, ptr_orig));
-        check(parse_rhs(in, ptr));
+        check(parse_expr(in, ptr_expr));
+        check(parse_rhs(in, ptr_rhs));
         return 0;
     }
 
@@ -89,5 +96,29 @@ int parse_non_star(char *in, int ptr) {
 }
 
 int parse_rhs(char *in, int ptr) {
+    tok t;
+    char out[100];
+    ptr=get_tok(out, &t, in, ptr);
+    int parens = 0;
+    int brackets = 0;
+    while (t != Eof && parens >= 0) {
+        if (t == Chr && out[0] == '(')
+            parens++;
+        if (t == Chr && out[0] == ')') {
+            parens--;
+            printf(" function returning");
+        }
+        if (t == Chr && out[0] == '[')
+            brackets++;
+        if (t == Chr && out[0] == ']') {
+            brackets--;
+            printf(" array of");
+        }
+        ptr=get_tok(out, &t, in, ptr);
+    }
+    if (parens < -1 || parens > 0 || brackets != 0) {
+        printf("\nUnbalanced parens\n");
+        return -1;
+    }
     return 0;
 }

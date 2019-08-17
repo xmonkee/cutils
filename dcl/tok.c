@@ -2,7 +2,7 @@
 
 int get_tok(char *out, tok *t, char *in, int ptr) {
     // Skip whitespace
-    while(isspace(c = in[ptr]))
+    while(isspace(in[ptr]))
         ptr++;
 
     //EOF
@@ -22,7 +22,7 @@ int get_tok(char *out, tok *t, char *in, int ptr) {
     }
 
     // Char
-    out[0] = c;
+    out[0] = in[ptr];
     out[1] = '\0';
     *t = Chr;
     return ++ptr;
