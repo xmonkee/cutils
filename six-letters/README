@@ -1,3 +1,4 @@
+
 /*
  * Exercise 6-2. Write a program that reads a C program and prints in
  * alphabetical order each group of variable names that are identical in the
@@ -34,13 +35,3 @@
  *   print_all(tree_right)
  */
 
-struct tree {
-    int count;
-    char *word;
-    struct tree *sub;
-    struct tree *left;
-
-int get_word(char *word) {
-    char c;
-    while(c = getchar()) 
-}
