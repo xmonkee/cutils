@@ -1,8 +1,8 @@
 #include "dcl.h"
 
-int main(void) {
-    char s[] = "int **(*a[])";
-    return parse(s, 0);
-    /*strcpy(s, "int **(mvar)[]()");*/
-    /*return parse(s, 0);*/
+int main(int argc, char **argv)
+{
+    if(argc < 2)
+        return 1;
+    return parse(argv[1], 0);
 }
